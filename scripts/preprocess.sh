@@ -3,7 +3,7 @@
 # TODO Update parameters for new project
 
 # Parameters (defaults are defined in params.py)
-RAW_DATA_PATH=./data/raw/
+RAW_DATA_PATH=./data/dataset/
 PREPROCESS_OUT_DIR=./data/records/test/
 TRAIN_EVAL_SPLIT=0.2
 

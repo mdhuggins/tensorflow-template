@@ -1,0 +1,23 @@
+[
+    {
+        "params": {
+            "batch_size": "32",
+            "glove_path": "./glove.pkl",
+            "learning_rate": "0.001",
+            "lstm_dropout": "0.1",
+            "lstm_rec_dropout": "0.1",
+            "lstm_units": "300",
+            "model_dir": "./trained-models/default/",
+            "num_epochs": "10",
+            "pad_token": "<PAD>",
+            "preprocess_out_dir": "./data/records/test/",
+            "random_seed": "1",
+            "raw_data_path": "./data/dataset/",
+            "train_eval_split": "0.2"
+        },
+        "pre-processing metadata": {
+            "embed_dim": 300,
+            "pad_len": 3
+        }
+    }
+]

@@ -1,0 +1,4 @@
+yeah,1
+no way, 0
+yes that's good, 1
+no thanks, 0

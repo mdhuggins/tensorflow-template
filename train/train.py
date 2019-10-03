@@ -1,5 +1,7 @@
 """ Train and evaluate models """
 
+# TODO Update metrics for new project
+
 import os
 import json
 from pathlib import Path
@@ -60,6 +62,8 @@ def save_config():
         with open(config_out_path, "w") as f:
             json.dump(existing_dump + [all_params_dict], f, indent=4, sort_keys=True)
     else:
+        if not os.path.exists(params.model_dir):
+            os.makedirs(params.model_dir)
         with open(config_out_path, "w") as f:
             json.dump([all_params_dict], f, indent=4, sort_keys=True)
 
@@ -95,10 +99,9 @@ def main():
 
     monitor.cleanup()
 
-    print("\n---------- Testing on Train ----------")
+    print("\n---------- Evaluating on Train ----------")
     # Make eval monitor
-    eval_monitor = MonitorHook(len(list(train_input_fn(params.batch_size))),
-                               label="Testing on Train")  # Hacky way to get number of batches
+    eval_monitor = MonitorHook(len(list(train_input_fn(params.batch_size))), label="Evaluating on Train")  # Hacky way to get number of batches
 
     # Evaluate the model
     eval_result = classifier.evaluate(
@@ -110,9 +113,9 @@ def main():
 
     print('\nTraining Set Accuracy: {accuracy:0.3f}\n'.format(**eval_result))
 
-    print("\n---------- Testing on Eval ----------")
+    print("\n---------- Evaluating on Eval ----------")
     # Make eval monitor
-    eval_monitor = MonitorHook(len(list(eval_input_fn(params.batch_size))), label="Testing on Eval")  # Hacky way to get number of batches
+    eval_monitor = MonitorHook(len(list(eval_input_fn(params.batch_size))), label="Evaluating on Eval")  # Hacky way to get number of batches
 
     # Evaluate the model
     eval_result = classifier.evaluate(

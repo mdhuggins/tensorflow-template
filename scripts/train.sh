@@ -3,7 +3,7 @@
 # TODO Update parameters for new project
 
 # Parameters (defaults are defined in params.py)
-MODEL_DIR="./trained_models/default/"
+MODEL_DIR="./trained-models/default/"
 NUM_EPOCHS=10
 
 python -m train.train \

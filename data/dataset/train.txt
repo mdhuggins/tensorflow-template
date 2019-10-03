@@ -1,0 +1,14 @@
+yes,1
+no,0
+definitely, 1
+nah, 0
+yes please, 1
+no thank you, 0
+sure, 1
+nope,0
+yes sir, 1
+no sir, 0
+affirmative, 1
+never, 0
+yes that sounds good, 1
+no way we're doing that, 0
