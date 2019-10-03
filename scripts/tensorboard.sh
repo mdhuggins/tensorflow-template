@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
-# TODO Implement
 
 if [ -z "$1" ]
   then
     echo "Usage: scripts/tensorboard model_name"
 else
-    tensorboard --logdir ./trained_models/test/$1
+    MODELDIR=./trained_models/$1
+    if [ -d $MODELDIR ]   # for file "if [-f /home/rama/file]"
+    then
+        tensorboard --logdir $MODELDIR
+    else
+        echo "Can't find "$MODELDIR
+    fi
 fi
