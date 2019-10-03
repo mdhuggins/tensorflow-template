@@ -1,6 +1,7 @@
 """ Train and evaluate models """
 
 import os
+import json
 from pathlib import Path
 import logging
 
@@ -13,8 +14,7 @@ from train.components.monitoring import MonitorHook
 from train.components.logging import LogFormatter, log_filter
 
 
-def main():
-    # Check if model already exists in model directory
+def check_model_directory():
     if os.path.exists(params.model_dir):
         print("A saved model already exists in {}, "
               "do you want to continue training the saved model (continue) or choose a new model directory (new)?".format(params.model_dir))
@@ -42,6 +42,36 @@ def main():
                 print("Invalid response. Please choose from \"continue\" or \"new\".")
                 invalid_response = True
 
+
+def save_config():
+    flags_list = [f.serialize() for f in params._get_flags_defined_by_module("train.params")]
+    flags_dict = dict([(f.split("=")[0].replace("--", ""), f.split("=")[1]) for f in flags_list])
+    config_dict = get_config()
+    all_params_dict = {"params": flags_dict, "pre-processing metadata": config_dict}
+
+    config_out_path = os.path.join(params.model_dir, "config.json")
+    print("Saving training config to {}".format(config_out_path))
+
+    # If config already saved, append new config to existing file
+    if os.path.exists(config_out_path):
+        with open(config_out_path, "r") as f:
+            existing_dump = json.load(f)
+
+        with open(config_out_path, "w") as f:
+            json.dump(existing_dump + [all_params_dict], f, indent=4, sort_keys=True)
+    else:
+        with open(config_out_path, "w") as f:
+            json.dump([all_params_dict], f, indent=4, sort_keys=True)
+
+
+def main():
+    # Check if model already exists in model directory
+    check_model_directory()
+
+    # Write metadata/params to file
+    save_config()
+
+    # Prepare model
     config = tf.estimator.RunConfig(
         model_dir=params.model_dir,
         log_step_count_steps=100,
@@ -109,5 +139,3 @@ if __name__ == '__main__':
     tf_log.addHandler(ch)
 
     main()
-
-# TODO save params/config with model
