@@ -1,5 +1,7 @@
 """ Train and evaluate models """
 
+import os
+from pathlib import Path
 import logging
 
 import tensorflow as tf
@@ -12,6 +14,34 @@ from train.components.logging import LogFormatter, log_filter
 
 
 def main():
+    # Check if model already exists in model directory
+    if os.path.exists(params.model_dir):
+        print("A saved model already exists in {}, "
+              "do you want to continue training the saved model (continue) or choose a new model directory (new)?".format(params.model_dir))
+
+        invalid_response = True
+        while invalid_response:
+            invalid_response = False
+
+            response = input("continue/new > ")
+            if response == "continue":
+                print("Continuing to train existing model.")
+            elif response == "new":
+                invalid_name = True
+                while invalid_name:
+                    invalid_name = False
+                    prefix = str(Path(params.model_dir).parent) + "/"
+                    new_name = input("New model directory: {}".format(prefix))
+                    if os.path.exists(prefix+new_name):
+                        print("{} already exists.".format(prefix+new_name))
+                        invalid_name = True
+                    else:
+                        print("Using {} as new model directory.".format(prefix+new_name))
+                        params.model_dir = prefix+new_name
+            else:
+                print("Invalid response. Please choose from \"continue\" or \"new\".")
+                invalid_response = True
+
     config = tf.estimator.RunConfig(
         model_dir=params.model_dir,
         log_step_count_steps=100,
@@ -19,7 +49,7 @@ def main():
 
     classifier = tf.keras.estimator.model_to_estimator(
         keras_model=model_factory(get_config()),
-        model_dir=params.model_dir,  # TODO Make sure training from scratch
+        model_dir=params.model_dir,
         config=config
     )
 
@@ -80,5 +110,4 @@ if __name__ == '__main__':
 
     main()
 
-# TODO Naming for model folders
 # TODO save params/config with model
