@@ -15,7 +15,7 @@ from components.embeddings import embed, _feature_dim
 
 # ---------- Prepare Data ----------
 
-def parse_raw_data():
+def parse_raw_data():  # TODO Update for new project
     # Train
     with open(params.raw_data_path + "train.txt", "r") as f:
         lines = f.readlines()
@@ -123,7 +123,7 @@ def write_records(data, filename):
     writer = tf.io.TFRecordWriter(params.preprocess_out_dir + filename)
 
     for d in data:
-        example = tf.train.Example(features=tf.train.Features(feature={
+        example = tf.train.Example(features=tf.train.Features(feature={  # TODO Update Example template for new project
             'tokens': _float_feature(np.array(d['tokens']).flatten()),
             'label': _int64_feature(d['label'])
         }))
