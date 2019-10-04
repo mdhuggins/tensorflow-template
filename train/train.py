@@ -13,7 +13,7 @@ from train.input import train_input_fn, eval_input_fn, get_config
 from train.params import params
 from train.models.lstm import model_factory
 from train.components.monitoring import MonitorHook
-from train.components.logging import LogFormatter, log_filter
+from train.components.logging import setup_logging
 
 
 def check_model_directory():
@@ -129,16 +129,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # Setup logging
-    tf_log = logging.getLogger("tensorflow")
-    tf_log.setLevel(logging.INFO)
-    tf_log.addFilter(log_filter)
-
-    # Add logging formatting
-    tf_log.removeHandler(tf_log.handlers[0])
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    ch.setFormatter(LogFormatter())
-    tf_log.addHandler(ch)
-
+    setup_logging()
     main()

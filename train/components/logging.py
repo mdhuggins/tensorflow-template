@@ -11,6 +11,20 @@ log_path_blacklist = ["session_manager.py", "estimator.py"]
 log_msg_blacklist = ["Graph was finalized", "Create CheckpointSaverHook", "Finished evaluation", "Starting evaluation"]
 
 
+def setup_logging():
+    # Setup logging
+    tf_log = logging.getLogger("tensorflow")
+    tf_log.setLevel(logging.INFO)
+    tf_log.addFilter(log_filter)
+
+    # Add logging formatting
+    tf_log.removeHandler(tf_log.handlers[0])
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(LogFormatter())
+    tf_log.addHandler(ch)
+
+
 def log_filter(record):
 
     for msg in log_msg_whitelist:
