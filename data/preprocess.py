@@ -5,6 +5,7 @@
 import os
 import json
 import random
+import pickle
 
 import numpy as np
 import tensorflow as tf
@@ -137,6 +138,10 @@ def write_metadata(data):
     with open(params.preprocess_out_dir + "metadata.json", "w") as f:
         json.dump(data, f)
 
+
+def write_pickle(data, filename):
+    with open(params.preprocess_out_dir + filename, 'wb') as f:
+        pickle.dump(data, f)
 
 # ---------- Go! ----------
 

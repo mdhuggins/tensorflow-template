@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Parameters (defaults are defined in params.py)
-MODEL_DIR="./trained-models/default/"
 
 if [ -z "$1" ]
   then
@@ -11,7 +10,7 @@ else
     if [ -d $MODELDIR ]   # for file "if [-f /home/rama/file]"
     then
         python -m train.test \
-            --model_dir $MODEL_DIR
+            --model_dir $MODELDIR
     else
         echo "Can't find "$MODELDIR
     fi

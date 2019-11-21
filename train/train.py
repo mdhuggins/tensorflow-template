@@ -104,14 +104,14 @@ def main():
     eval_monitor = MonitorHook(len(list(train_input_fn(params.batch_size))), label="Evaluating on Train")  # Hacky way to get number of batches
 
     # Evaluate the model
-    eval_result = classifier.evaluate(
+    train_result = classifier.evaluate(
         input_fn=lambda: train_input_fn(params.batch_size),
         hooks=[eval_monitor]
     )
 
     eval_monitor.cleanup()
 
-    print('\nTraining Set Accuracy: {accuracy:0.3f}\n'.format(**eval_result))
+    print('\nTraining Set Accuracy: {accuracy:0.3f}\n'.format(**train_result))
 
     print("\n---------- Evaluating on Eval ----------")
     # Make eval monitor
@@ -126,6 +126,44 @@ def main():
     eval_monitor.cleanup()
 
     print('\nEval Set Accuracy: {accuracy:0.3f}\n'.format(**eval_result))
+
+    # Write metadata/params/results to file
+    save_results({
+        "Train Accuracy": float(train_result['accuracy']),
+        "Validation Accuracy": float(eval_result['accuracy']),
+    })
+
+
+def save_results(results_dict, outfile="train-results.json"):
+    flags_list = [f.serialize() for f in params._get_flags_defined_by_module("train.params")]
+
+    # Handle Freeze Flag - Very Hacky
+    for i in range(len(flags_list)):
+        if flags_list[i] == "--freeze_classifier":
+            flags_list[i] = "--freeze_classifier=True"
+        elif flags_list[i] == "--nofreeze_classifier":
+            flags_list[i] = "--freeze_classifier=False"
+
+    flags_dict = dict([(f.split("=")[0].replace("--", ""), f.split("=")[1]) for f in flags_list])  # TODO Fix error
+    config_dict = get_config()
+    all_params_dict = {"params": flags_dict, "pre-processing metadata": config_dict, "results": results_dict, "script": "train.py"}
+
+    config_out_path = os.path.join(params.model_dir, outfile)
+
+    # If config already saved, append new config to existing file
+    if os.path.exists(config_out_path):
+        with open(config_out_path, "r") as f:
+            existing_dump = json.load(f)
+
+        with open(config_out_path, "w") as f:
+            json.dump(existing_dump + [all_params_dict], f, indent=4, sort_keys=True)
+    else:
+        if not os.path.exists(params.model_dir):
+            os.makedirs(params.model_dir)
+        with open(config_out_path, "w") as f:
+            json.dump([all_params_dict], f, indent=4, sort_keys=True)
+
+    print("Saved training config and evaluation results to {}".format(config_out_path))
 
 
 if __name__ == '__main__':
