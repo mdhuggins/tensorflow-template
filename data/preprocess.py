@@ -27,7 +27,8 @@ def parse_raw_data():  # TODO Update for new project
         text, label = line.split(",")
 
         # Remove non-alpha characters
-        text = ''.join(filter(str.isalpha, text))
+        text = ''.join(filter(lambda x: str.isalpha(x) or str.isspace(x), text))
+
 
         # Lowercase and split
         tokens = text.lower().split()
