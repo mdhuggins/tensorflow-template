@@ -13,7 +13,7 @@ opt-einsum==3.0.1
 protobuf==3.9.2
 six==1.12.0
 tensorboard==2.0.0
-tensorflow==2.0.1
+tensorflow==2.11.1
 tensorflow-estimator==2.0.0
 termcolor==1.1.0
 tf-estimator-nightly==1.14.0.dev2019080601
